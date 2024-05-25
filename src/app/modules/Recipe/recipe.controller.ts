@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { RecipeServices } from "./user.service";
+import { RecipeServices } from "./recipe.service";
 
 const createRecipe = async (
   req: Request,
