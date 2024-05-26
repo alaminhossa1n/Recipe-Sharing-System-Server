@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 export type TRecipe = {
   recipeName: string;
-  recipeImage?: string;
+  recipeImage: string;
   recipeDetails: string;
   video?: string;
   country: string;

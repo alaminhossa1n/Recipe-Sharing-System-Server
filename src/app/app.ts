@@ -3,6 +3,7 @@ import cors from "cors";
 import { globalErrorhandler } from "./middlewares/globalErrorhandler";
 import { userRoute } from "./modules/Users/user.route";
 import { recipeRoute } from "./modules/Recipe/recipe.route";
+import { paymentRoute } from "./modules/payment/payment.route";
 
 const app: Application = express();
 
@@ -16,6 +17,9 @@ app.use(cors(corsOptions));
 
 app.use("/api/user", userRoute);
 app.use("/api/recipe", recipeRoute);
+
+// payments
+app.use("/api/payment", paymentRoute);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello Mr. Developer!");

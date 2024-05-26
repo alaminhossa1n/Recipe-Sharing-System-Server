@@ -6,6 +6,22 @@ const createRecipeInToDB = async (payload: TRecipe) => {
   return result;
 };
 
+//get all recipes
+const getAllRecipesFromDB = async () => {
+  const result = await RecipeModel.find();
+
+  return result;
+};
+
+//get single recipes
+const getSingleRecipesFromDB = async (_id: string) => {
+  const result = await RecipeModel.findOne({ _id });
+
+  return result;
+};
+
 export const RecipeServices = {
   createRecipeInToDB,
+  getAllRecipesFromDB,
+  getSingleRecipesFromDB,
 };

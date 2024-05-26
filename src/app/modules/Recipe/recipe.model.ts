@@ -3,7 +3,7 @@ import { TRecipe } from "./recipe.interface";
 
 const recipeSchema = new Schema<TRecipe>({
   recipeName: { type: String, required: true },
-  recipeImage: { type: String, required: false },
+  recipeImage: { type: String, required: true },
   recipeDetails: { type: String, required: true },
   video: { type: String, required: false },
   country: { type: String, required: true },

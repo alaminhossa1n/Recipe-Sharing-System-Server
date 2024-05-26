@@ -24,12 +24,12 @@ const createUserInToDB = async (payload: TUser) => {
         user: result,
         token: accessToken,
       };
+    } else {
+      return {
+        user: isUserExist,
+        token: accessToken,
+      };
     }
-
-    return {
-      user: jwtPayload,
-      token: accessToken,
-    };
   } catch (error) {
     console.log(error);
     return {
