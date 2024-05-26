@@ -10,6 +10,8 @@ const createUserInToDB = async (payload: TUser) => {
     const jwtPayload = {
       email: payload?.email,
       displayName: payload?.displayName,
+      photoURL: payload?.photoURL,
+      coin: payload?.coin,
     };
 
     const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
@@ -25,10 +27,7 @@ const createUserInToDB = async (payload: TUser) => {
     }
 
     return {
-      user: {
-        email: payload?.email,
-        displayName: payload?.displayName,
-      },
+      user: jwtPayload,
       token: accessToken,
     };
   } catch (error) {
