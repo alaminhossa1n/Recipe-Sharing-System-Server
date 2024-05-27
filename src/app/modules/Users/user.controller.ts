@@ -21,7 +21,7 @@ const getSingleUser = async (
   next: NextFunction
 ) => {
   try {
-    const email = req.query.email;
+    const email = req.query.email as string;
 
     const result = await UserServices.getSingleUserFromDB(email);
     res.status(200).json({

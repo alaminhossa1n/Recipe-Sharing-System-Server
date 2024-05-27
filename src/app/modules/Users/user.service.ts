@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import config from "../../config";
-import { TUser } from "./user.interface";
+import { TCoinInfo, TUser } from "./user.interface";
 import UserModel from "./user.model";
 import jwt from "jsonwebtoken";
 
@@ -47,7 +47,7 @@ const getSingleUserFromDB = async (email: string) => {
   return result;
 };
 
-const updateCoinsInToDB = async (payload) => {
+const updateCoinsInToDB = async (payload: TCoinInfo) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 

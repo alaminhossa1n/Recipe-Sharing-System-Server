@@ -4,3 +4,10 @@ export type TUser = {
   email: string;
   coin: number;
 };
+
+export type TCoinInfo = {
+  viewerEmail: string;
+  creatorEmail: string;
+  type: string;
+  coin: number;
+};
