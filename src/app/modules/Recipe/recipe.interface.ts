@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 
 export type TRecipe = {
   recipeName: string;
@@ -7,6 +6,7 @@ export type TRecipe = {
   video?: string;
   country: string;
   category: string;
-  purchased_by?: ObjectId;
+  purchased_by?: string[];
   creatorEmail: string;
+  watchCount?: number;
 };

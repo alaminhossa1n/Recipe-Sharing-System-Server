@@ -58,8 +58,31 @@ const getSingleRecipes = async (
   }
 };
 
+//update recipe
+const updateRecipe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+    const payload = req.body;
+
+    const result = await RecipeServices.updateRecipeInToDB(id, payload);
+    res.status(200).json({
+      success: true,
+      statusCode: 201,
+      message: "Recipe Updated successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const RecipeController = {
   createRecipe,
   getAllRecipes,
   getSingleRecipes,
+  updateRecipe,
 };

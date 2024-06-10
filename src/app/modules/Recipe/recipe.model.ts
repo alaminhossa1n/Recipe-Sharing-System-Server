@@ -8,8 +8,9 @@ const recipeSchema = new Schema<TRecipe>({
   video: { type: String, required: false },
   country: { type: String, required: true },
   category: { type: String, required: true },
-  purchased_by: { type: Schema.Types.ObjectId, ref: "Users", required: false },
+  purchased_by: { type: [String], default: [] },
   creatorEmail: { type: String, required: true },
+  watchCount: { type: Number },
 });
 
 const RecipeModel = model("Recipes", recipeSchema);

@@ -1,9 +1,9 @@
 import express, { Request, Response, Application } from "express";
 import cors from "cors";
-import { globalErrorhandler } from "./middlewares/globalErrorhandler";
-import { userRoute } from "./modules/Users/user.route";
-import { recipeRoute } from "./modules/Recipe/recipe.route";
-import { paymentRoute } from "./modules/payment/payment.route";
+import { globalErrorhandler } from "./app/middlewares/globalErrorhandler";
+import { userRoute } from "./app/modules/Users/user.route";
+import { recipeRoute } from "./app/modules/Recipe/recipe.route";
+import { paymentRoute } from "./app/modules/payment/payment.route";
 
 const app: Application = express();
 
