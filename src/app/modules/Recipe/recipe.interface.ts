@@ -1,4 +1,3 @@
-
 export type TRecipe = {
   recipeName: string;
   recipeImage: string;
@@ -7,6 +6,7 @@ export type TRecipe = {
   country: string;
   category: string;
   purchased_by?: string[];
+  reactors?: string[];
   creatorEmail: string;
   watchCount?: number;
 };

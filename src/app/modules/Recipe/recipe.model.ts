@@ -9,8 +9,9 @@ const recipeSchema = new Schema<TRecipe>({
   country: { type: String, required: true },
   category: { type: String, required: true },
   purchased_by: { type: [String], default: [] },
+  reactors: { type: [String], default: [] },
   creatorEmail: { type: String, required: true },
-  watchCount: { type: Number },
+  watchCount: { type: Number, default: 0 },
 });
 
 const RecipeModel = model("Recipes", recipeSchema);
