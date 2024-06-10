@@ -35,7 +35,7 @@ const updateRecipeInToDB = async (id: string, payload: UpdatePayload) => {
 
     const result = await RecipeModel.findOneAndUpdate(
       { _id: id },
-      { $addToSet: { purchased_by: email } },
+      { $addToSet: { purchased_by: email, } },
       { new: true }
     );
 

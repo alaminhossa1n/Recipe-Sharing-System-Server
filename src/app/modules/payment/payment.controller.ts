@@ -10,7 +10,6 @@ const createPaymentIntents = async (
 ) => {
   try {
     let { price } = req.body;
-    console.log(price);
     price = price * 100;
 
     const paymentIntent = await stripe.paymentIntents.create({

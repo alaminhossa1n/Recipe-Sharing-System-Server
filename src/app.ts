@@ -8,12 +8,12 @@ import { paymentRoute } from "./app/modules/payment/payment.route";
 const app: Application = express();
 
 const corsOptions = {
-  origin: ["http://localhost:5173", ""],
+  origin: ["http://localhost:5173", "https://recipe-sharing-ah.netlify.app"],
   credentials: true,
 };
 
-app.use(express.json());
 app.use(cors(corsOptions));
+app.use(express.json());
 
 app.use("/api/user", userRoute);
 app.use("/api/recipe", recipeRoute);
