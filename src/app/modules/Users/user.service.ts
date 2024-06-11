@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import config from "../../config";
-import {  TUser } from "./user.interface";
+import { TUser } from "./user.interface";
 import UserModel from "./user.model";
 import jwt from "jsonwebtoken";
 
@@ -47,9 +47,22 @@ const getSingleUserFromDB = async (email: string) => {
   return result;
 };
 
+const buyCoinIntoDB = async (payload: {
+  viewerEmail: string;
+  coin: number;
+}) => {
+  const { viewerEmail, coin } = payload;
+  const result = await UserModel.findOneAndUpdate(
+    { email: viewerEmail },
+    { $inc: { coin } },
+    { new: true }
+  );
 
+  return result;
+};
 
 export const UserServices = {
   createUserInToDB,
   getSingleUserFromDB,
+  buyCoinIntoDB,
 };

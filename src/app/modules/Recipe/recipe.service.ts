@@ -29,17 +29,6 @@ const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
   try {
     const { viewerEmail, creatorEmail } = payload;
 
-    // Fetch the target recipe
-    const targetRecipe = await RecipeModel.findOne({ _id: recipeId });
-
-    if (!targetRecipe) {
-      throw new Error("Recipe not found");
-    }
-
-    if (targetRecipe.creatorEmail === creatorEmail) {
-      return "You are the Creator of this recipe";
-    }
-
     session.startTransaction();
 
     // Decrement coin field for viewer
@@ -68,7 +57,7 @@ const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
     const recipeResult = await RecipeModel.findOneAndUpdate(
       { _id: recipeId },
       {
-        $addToSet: { purchased_by: viewerEmail, reactors: viewerEmail },
+        $addToSet: { purchased_by: viewerEmail },
         $inc: { watchCount: 1 },
       },
       { new: true, session } // Use session to ensure it is part of the transaction
@@ -89,9 +78,30 @@ const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
   }
 };
 
+// react recipe
+const reactRecipeIntoDB = async (
+  recipeId: string,
+  payload: { viewerEmail: string }
+) => {
+  try {
+    const result = await RecipeModel.findOneAndUpdate(
+      { _id: recipeId },
+      { $addToSet: { reactors: payload.viewerEmail } },
+      {
+        new: true,
+      }
+    );
+
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const RecipeServices = {
   createRecipeInToDB,
   getAllRecipesFromDB,
   getSingleRecipesFromDB,
   viewRecipeFromDB,
+  reactRecipeIntoDB,
 };
