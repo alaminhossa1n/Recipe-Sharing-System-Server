@@ -1,5 +1,7 @@
-import { TRecipe } from "./recipe.interface";
+import mongoose from "mongoose";
+import { TRecipe, TViewPayload } from "./recipe.interface";
 import RecipeModel from "./recipe.model";
+import UserModel from "../Users/user.model";
 
 const createRecipeInToDB = async (payload: TRecipe) => {
   const result = await RecipeModel.create(payload);
@@ -20,34 +22,69 @@ const getSingleRecipesFromDB = async (_id: string) => {
   return result;
 };
 
-// update recipe
-interface UpdatePayload {
-  email: string;
-}
-const updateRecipeInToDB = async (id: string, payload: UpdatePayload) => {
+//view recipe
+const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
+  const session = await mongoose.startSession();
+
   try {
-    const { email } = payload;
-    const targetRecipe = await RecipeModel.findOne({ _id: id });
+    const { viewerEmail, creatorEmail } = payload;
 
-    if (targetRecipe?.creatorEmail === email) {
-      return "You are the Creator of this recipe";
-    }
+    // Fetch the target recipe
+    const targetRecipe = await RecipeModel.findOne({ _id: recipeId });
 
-    const result = await RecipeModel.findOneAndUpdate(
-      { _id: id },
-      { $addToSet: { purchased_by: email, } },
-      { new: true }
-    );
-
-    if (!result) {
+    if (!targetRecipe) {
       throw new Error("Recipe not found");
     }
 
-    return result;
+    if (targetRecipe.creatorEmail === creatorEmail) {
+      return "You are the Creator of this recipe";
+    }
+
+    session.startTransaction();
+
+    // Decrement coin field for viewer
+    const viewerResult = await UserModel.updateOne(
+      { email: viewerEmail },
+      { $inc: { coin: -10 } },
+      { session }
+    );
+
+    if (viewerResult.modifiedCount === 0) {
+      throw new Error(`Failed to update coins for viewer: ${viewerEmail}`);
+    }
+
+    // Increment coin field for creator
+    const creatorResult = await UserModel.updateOne(
+      { email: creatorEmail },
+      { $inc: { coin: 1 } },
+      { session }
+    );
+
+    if (creatorResult.modifiedCount === 0) {
+      throw new Error(`Failed to update coins for creator: ${creatorEmail}`);
+    }
+
+    // Update purchased_by, reactors, and watch count fields in the recipe collection
+    const recipeResult = await RecipeModel.findOneAndUpdate(
+      { _id: recipeId },
+      {
+        $addToSet: { purchased_by: viewerEmail, reactors: viewerEmail },
+        $inc: { watchCount: 1 },
+      },
+      { new: true, session } // Use session to ensure it is part of the transaction
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return {
+      viewerResult,
+      creatorResult,
+      recipeResult,
+    };
   } catch (error) {
-    // Log the error for debugging purposes
-    console.error("Error updating recipe:", error);
-    // Optionally, you can throw the error to be handled by the caller
+    await session.abortTransaction();
+    session.endSession();
     throw error;
   }
 };
@@ -56,5 +93,5 @@ export const RecipeServices = {
   createRecipeInToDB,
   getAllRecipesFromDB,
   getSingleRecipesFromDB,
-  updateRecipeInToDB,
+  viewRecipeFromDB,
 };

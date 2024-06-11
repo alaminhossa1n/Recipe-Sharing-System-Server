@@ -10,3 +10,8 @@ export type TRecipe = {
   creatorEmail: string;
   watchCount?: number;
 };
+
+export type TViewPayload = {
+  viewerEmail: string;
+  creatorEmail: string;
+};

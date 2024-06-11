@@ -58,21 +58,17 @@ const getSingleRecipes = async (
   }
 };
 
-//update recipe
-const updateRecipe = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+//view recipe
+const viewRecipe = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id;
+    const { recipeId } = req.params;
     const payload = req.body;
 
-    const result = await RecipeServices.updateRecipeInToDB(id, payload);
+    const result = await RecipeServices.viewRecipeFromDB(recipeId, payload);
     res.status(200).json({
       success: true,
       statusCode: 201,
-      message: "Recipe Updated successfully",
+      message: "Recipe Viewed successfully",
       data: result,
     });
   } catch (err) {
@@ -84,5 +80,5 @@ export const RecipeController = {
   createRecipe,
   getAllRecipes,
   getSingleRecipes,
-  updateRecipe,
+  viewRecipe,
 };
