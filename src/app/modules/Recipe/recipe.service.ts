@@ -32,25 +32,26 @@ const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
     session.startTransaction();
 
     // Decrement coin field for viewer
-    const viewerResult = await UserModel.updateOne(
-      { email: viewerEmail },
-      { $inc: { coin: -10 } },
-      { session }
-    );
+    if (viewerEmail && creatorEmail) {
+      const viewerResult = await UserModel.updateOne(
+        { email: viewerEmail },
+        { $inc: { coin: -10 } },
+        { session }
+      );
+      if (viewerResult.modifiedCount === 0) {
+        throw new Error(`Failed to update coins for viewer: ${viewerEmail}`);
+      }
 
-    if (viewerResult.modifiedCount === 0) {
-      throw new Error(`Failed to update coins for viewer: ${viewerEmail}`);
-    }
+      // Increment coin field for creator
+      const creatorResult = await UserModel.updateOne(
+        { email: creatorEmail },
+        { $inc: { coin: 1 } },
+        { session }
+      );
 
-    // Increment coin field for creator
-    const creatorResult = await UserModel.updateOne(
-      { email: creatorEmail },
-      { $inc: { coin: 1 } },
-      { session }
-    );
-
-    if (creatorResult.modifiedCount === 0) {
-      throw new Error(`Failed to update coins for creator: ${creatorEmail}`);
+      if (creatorResult.modifiedCount === 0) {
+        throw new Error(`Failed to update coins for creator: ${creatorEmail}`);
+      }
     }
 
     // Update purchased_by, reactors, and watch count fields in the recipe collection
@@ -67,8 +68,6 @@ const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
     session.endSession();
 
     return {
-      viewerResult,
-      creatorResult,
       recipeResult,
     };
   } catch (error) {

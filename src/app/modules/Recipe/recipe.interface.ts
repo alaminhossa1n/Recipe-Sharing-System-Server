@@ -14,4 +14,5 @@ export type TRecipe = {
 export type TViewPayload = {
   viewerEmail: string;
   creatorEmail: string;
+  watchCount: boolean;
 };
