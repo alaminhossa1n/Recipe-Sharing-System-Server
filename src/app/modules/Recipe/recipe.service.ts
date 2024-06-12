@@ -79,22 +79,31 @@ const viewRecipeFromDB = async (recipeId: string, payload: TViewPayload) => {
 };
 
 // react recipe
-const reactRecipeIntoDB = async (
-  recipeId: string,
-  payload: { viewerEmail: string }
-) => {
+interface Payload {
+  viewerEmail: string;
+  state: boolean;
+}
+const reactRecipeIntoDB = async (recipeId: string, payload: Payload) => {
   try {
+    const { viewerEmail, state } = payload;
+
+    const updateOperation = state
+      ? { $addToSet: { reactors: viewerEmail } }
+      : { $pull: { reactors: viewerEmail } };
+
     const result = await RecipeModel.findOneAndUpdate(
       { _id: recipeId },
-      { $addToSet: { reactors: payload.viewerEmail } },
-      {
-        new: true,
-      }
+      updateOperation,
+      { new: true }
     );
+
+    if (!result) {
+      throw new Error("Recipe not found");
+    }
 
     return result;
   } catch (error) {
-    return error;
+    throw new Error("Failed to update recipe reaction");
   }
 };
 
