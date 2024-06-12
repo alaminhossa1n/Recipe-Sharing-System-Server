@@ -6,6 +6,9 @@ const createRecipe = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.body);
+  const imgUrl = req.file?.path;
+  req.body.recipeImage = imgUrl;
   try {
     const result = await RecipeServices.createRecipeInToDB(req.body);
     res.status(200).json({

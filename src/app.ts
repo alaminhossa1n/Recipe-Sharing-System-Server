@@ -25,6 +25,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello Mr. Developer!");
 });
 
+
 app.use(globalErrorhandler);
 
 export default app;
