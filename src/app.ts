@@ -5,6 +5,7 @@ import { userRoute } from "./app/modules/Users/user.route";
 import { recipeRoute } from "./app/modules/Recipe/recipe.route";
 import { paymentRoute } from "./app/modules/payment/payment.route";
 import { categoryRoute } from "./app/modules/category/category.routes";
+import { countryRoute } from "./app/modules/country/country.routes";
 
 const app: Application = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/api/user", userRoute);
 app.use("/api/recipe", recipeRoute);
 app.use("/api/category", categoryRoute);
+app.use("/api/country", countryRoute);
 
 // payments
 app.use("/api/payment", paymentRoute);

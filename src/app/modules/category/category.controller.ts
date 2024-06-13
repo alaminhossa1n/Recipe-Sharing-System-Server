@@ -27,9 +27,9 @@ const getAllCategory = async (
 ) => {
   try {
     const result = await categoryServices.getAllCategoryFromDB();
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      statusCode: 201,
+      statusCode: 200,
       message: "Category Retrieved successfully",
       data: result,
     });

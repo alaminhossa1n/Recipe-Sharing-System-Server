@@ -9,6 +9,7 @@ const createRecipe = async (
   console.log(req.body);
   const imgUrl = req.file?.path;
   req.body.recipeImage = imgUrl;
+  console.log(imgUrl);
   try {
     const result = await RecipeServices.createRecipeInToDB(req.body);
     res.status(201).json({
