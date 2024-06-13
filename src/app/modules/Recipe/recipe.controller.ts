@@ -11,7 +11,7 @@ const createRecipe = async (
   req.body.recipeImage = imgUrl;
   try {
     const result = await RecipeServices.createRecipeInToDB(req.body);
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       statusCode: 201,
       message: "Recipe Created successfully",
