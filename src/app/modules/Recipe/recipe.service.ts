@@ -9,8 +9,24 @@ const createRecipeInToDB = async (payload: TRecipe) => {
 };
 
 //get all recipes
-const getAllRecipesFromDB = async () => {
-  const result = await RecipeModel.find();
+
+const getAllRecipesFromDB = async (query: Partial<TRecipe>) => {
+  const { country, category, recipeName } = query;
+
+  const querySearch: any = {};
+
+  if (country) {
+    querySearch.country = country;
+  }
+  if (category) {
+    querySearch.category = category;
+  }
+
+  if (recipeName) {
+    querySearch.recipeName = { $regex: recipeName, $options: "i" };
+  }
+
+  const result = await RecipeModel.find(querySearch);
 
   return result;
 };

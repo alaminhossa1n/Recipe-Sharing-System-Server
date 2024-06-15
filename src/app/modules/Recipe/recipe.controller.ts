@@ -8,7 +8,7 @@ const createRecipe = async (
 ) => {
   const imgUrl = req.file?.path;
   req.body.recipeImage = imgUrl;
-  console.log(imgUrl);
+  // console.log(imgUrl);
   try {
     const result = await RecipeServices.createRecipeInToDB(req.body);
     res.status(201).json({
@@ -28,8 +28,9 @@ const getAllRecipes = async (
   res: Response,
   next: NextFunction
 ) => {
+
   try {
-    const result = await RecipeServices.getAllRecipesFromDB();
+    const result = await RecipeServices.getAllRecipesFromDB(req.query);
     res.status(200).json({
       success: true,
       statusCode: 201,
