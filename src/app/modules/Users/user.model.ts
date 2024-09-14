@@ -5,8 +5,9 @@ const userSchema = new Schema<TUser>(
   {
     displayName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    photoURL: { type: String, required: true },
+    photoURL: { type: String},
     coin: { type: Number, required: true },
+    password: { type: String, required: true },
   },
   {
     timestamps: true,

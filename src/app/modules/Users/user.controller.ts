@@ -7,7 +7,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
       success: true,
       statusCode: 201,
-      message: "User retrieved successfully",
+      message: "User Created successfully",
       data: result,
     });
   } catch (err) {

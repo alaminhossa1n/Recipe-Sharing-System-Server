@@ -1,6 +1,7 @@
 export type TUser = {
   displayName: string;
-  photoURL: string;
+  photoURL?: string;
   email: string;
   coin: number;
+  password?: string;
 };

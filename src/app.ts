@@ -6,6 +6,7 @@ import { recipeRoute } from "./app/modules/Recipe/recipe.route";
 import { paymentRoute } from "./app/modules/payment/payment.route";
 import { categoryRoute } from "./app/modules/category/category.routes";
 import { countryRoute } from "./app/modules/country/country.routes";
+import { authRoute } from "./app/modules/Auth/auth.route";
 
 const app: Application = express();
 
@@ -21,6 +22,7 @@ app.use("/api/user", userRoute);
 app.use("/api/recipe", recipeRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/country", countryRoute);
+app.use("/api/auth", authRoute);
 
 // payments
 app.use("/api/payment", paymentRoute);

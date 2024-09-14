@@ -1,11 +1,12 @@
-import mongoose from "mongoose";
 import config from "../../config";
 import { TUser } from "./user.interface";
 import UserModel from "./user.model";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const createUserInToDB = async (payload: TUser) => {
   try {
+
     const isUserExist = await UserModel.findOne({ email: payload?.email });
 
     const jwtPayload = {
@@ -19,20 +20,23 @@ const createUserInToDB = async (payload: TUser) => {
       expiresIn: "10d",
     });
 
-    if (!isUserExist) {
-      const result = await UserModel.create(payload);
+    if (isUserExist) {
+      return {
+        success: true,
+        statusCode: 200,
+        message: "User Already Exist",
+        data: null,
+      };
+    } else {
+      const hashedPassword = await bcrypt.hash(payload.password as string, 10);
+      const newUser = { ...payload, password: hashedPassword };
+      const result = await UserModel.create(newUser);
       return {
         user: result,
         token: accessToken,
       };
-    } else {
-      return {
-        user: isUserExist,
-        token: accessToken,
-      };
     }
   } catch (error) {
-    console.log(error);
     return {
       success: false,
       statusCode: 500,
