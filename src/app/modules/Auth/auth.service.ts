@@ -7,42 +7,55 @@ import { TUser } from "../Users/user.interface";
 
 const signInToDB = async (payload: TUser) => {
   try {
-    const isUserExist = await UserModel.findOne({ email: payload?.email });
+    // Check if the user exists
+    let isUserExist = await UserModel.findOne({
+      email: payload?.email,
+    });
     if (!isUserExist) {
-      throw new AppError(404, "User does not exits!");
-    } else {
-      const isPasswordMatched = await bcrypt.compare(
-        payload.password as string,
-        isUserExist.password as string
-      );
-
-      if (isPasswordMatched) {
-        const jwtPayload = {
-          email: isUserExist?.email,
-          displayName: isUserExist?.displayName,
-          photoURL: isUserExist?.photoURL,
-          coin: isUserExist?.coin,
-        };
-
-        const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
-          expiresIn: "10d",
-        });
-        return {
-          user: isUserExist,
-          token: accessToken,
-        };
-      } else {
-        throw new AppError(401, "Ops Wrong Password!");
-      }
+      throw new AppError(404, "User does not exist!"); // Custom error for user not found
     }
-  } catch (err) {
-    console.log(err);
-    return {
-      success: false,
-      statusCode: 500,
-      message: "Internal server error",
-      data: null,
+
+    // Verify the password
+    const isPasswordMatched = await bcrypt.compare(
+      payload.password as string,
+      isUserExist.password as string
+    );
+
+    if (!isPasswordMatched) {
+      throw new AppError(401, "Wrong password!"); // Custom error for wrong password
+    } else {
+      isUserExist = isUserExist?.toObject(); // Convert to plain JS object
+      delete isUserExist?.password; // Manually remove the password field
+    }
+
+    // Generate JWT payload
+    const jwtPayload = {
+      email: isUserExist.email,
+      displayName: isUserExist.displayName,
+      photoURL: isUserExist.photoURL,
+      coin: isUserExist.coin,
     };
+
+    // Generate access token
+    const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
+      expiresIn: "10d",
+    });
+
+    // Return user and token
+    return {
+      success: true,
+      statusCode: 200,
+      message: "Sign in successful",
+      data: {
+        user: isUserExist,
+        token: accessToken,
+      },
+    };
+  } catch (err) {
+    // Throw the error to be caught by the controller or error handler
+    throw err instanceof AppError
+      ? err
+      : new AppError(500, "Internal server error");
   }
 };
 
