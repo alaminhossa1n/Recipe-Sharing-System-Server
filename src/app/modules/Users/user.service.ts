@@ -22,8 +22,8 @@ const createUserInToDB = async (payload: TUser) => {
 
     if (isUserExist) {
       return {
-        success: true,
-        statusCode: 200,
+        success: false,
+        statusCode: 409,
         message: "User Already Exist",
         data: null,
       };

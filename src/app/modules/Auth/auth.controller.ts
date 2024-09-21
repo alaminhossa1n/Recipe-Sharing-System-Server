@@ -43,7 +43,7 @@ const googleSigIn = async (req: Request, res: Response, next: NextFunction) => {
         success: true,
         statusCode: 200,
         message: "User signed in successfully",
-        data: result,
+        data: result.data,
       });
     }
   } catch (err) {
