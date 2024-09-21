@@ -21,13 +21,6 @@ const signInToDB = async (payload: TUser) => {
       isUserExist.password as string
     );
 
-    if (!isPasswordMatched) {
-      throw new AppError(401, "Wrong password!"); // Custom error for wrong password
-    } else {
-      isUserExist = isUserExist?.toObject(); // Convert to plain JS object
-      delete isUserExist?.password; // Manually remove the password field
-    }
-
     // Generate JWT payload
     const jwtPayload = {
       email: isUserExist.email,
@@ -40,6 +33,13 @@ const signInToDB = async (payload: TUser) => {
     const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
       expiresIn: "10d",
     });
+
+    if (!isPasswordMatched) {
+      throw new AppError(401, "Wrong password!"); // Custom error for wrong password
+    } else {
+      isUserExist = isUserExist?.toObject(); // Convert to plain JS object
+      delete isUserExist?.password; // Manually remove the password field
+    }
 
     // Return user and token
     return {
