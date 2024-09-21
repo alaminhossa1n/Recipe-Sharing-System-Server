@@ -64,33 +64,44 @@ const googleSinInToDB = async (payload: TUser) => {
     // Check if the user exists
     let isUserExist = await UserModel.findOne({
       email: payload?.email,
-    });
+    })
 
-    if (!isUserExist) {
-      throw new AppError(401, "User not found!"); // Custom error for wrong password
-    } else {
-      isUserExist = isUserExist?.toObject(); // Convert to plain JS object
-      delete isUserExist?.password; // Manually remove the password field
-    }
+    // Prepare user data for the JWT payload
+    const userPayload = isUserExist || payload;
 
     // Generate JWT payload
     const jwtPayload = {
-      email: isUserExist.email,
-      displayName: isUserExist.displayName,
-      photoURL: isUserExist.photoURL,
-      coin: isUserExist.coin,
+      email: userPayload.email,
+      displayName: userPayload.displayName,
+      photoURL: userPayload.photoURL,
     };
 
     // Generate access token
     const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
       expiresIn: "10d",
     });
+
+    // If the user exists, return the existing user data
+    if (isUserExist) {
+      return {
+        success: true,
+        statusCode: 200,
+        message: "Sign in successful",
+        data: {
+          user: isUserExist,
+          token: accessToken,
+        },
+      };
+    }
+
+    // If the user does not exist, create a new user and return the result
+    const newUser = await UserModel.create(payload);
     return {
       success: true,
-      statusCode: 200,
-      message: "Sign in successful",
+      statusCode: 201,
+      message: "User created successfully",
       data: {
-        user: isUserExist,
+        user: newUser,
         token: accessToken,
       },
     };
@@ -100,6 +111,7 @@ const googleSinInToDB = async (payload: TUser) => {
       : new AppError(500, "Internal server error");
   }
 };
+
 
 export const authService = {
   signInToDB,
